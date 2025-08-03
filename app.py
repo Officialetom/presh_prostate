@@ -13,7 +13,7 @@ from fpdf import FPDF
 
 # Constants
 ADMIN_PASSWORD = "admin123"
-MODEL_FILE = "model5.pkl"
+MODEL_FILE = "model6.pkl"
 DB_FILE = "predictions.db"
 
 # Persistent database
