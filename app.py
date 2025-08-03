@@ -39,7 +39,7 @@ if "model_data" not in st.session_state:
     st.session_state.model_data = None
 
 def admin_login():
-    st.title("🔐 Admin Login")
+    st.title("Admin Login - Prostate Cancer Risk Prediction System")
     password = st.text_input("Enter Admin Password", type="password")
     if st.button("Login"):
         if password == ADMIN_PASSWORD:
@@ -83,7 +83,7 @@ def train_model(data):
     matrix = confusion_matrix(y_test, y_pred)
 
     # Display results
-    st.subheader("📊 Model Evaluation")
+    st.subheader("Model Evaluation")
     st.write(f"**Accuracy:** {accuracy:.2f}")
     st.write("**Classification Report:**")
     st.json(report)
@@ -110,7 +110,7 @@ def save_prediction(record, result):
     conn.commit()
 
 def prediction_form(model, scaler):
-    st.header("📋 Make a Prediction")
+    st.header("📋 Patient Data Entry for Prediction")
     name = st.text_input("Patient Name")
     age = st.number_input("Age", 20, 100)
     psa = st.number_input("PSA Level", 0.0)
@@ -126,7 +126,7 @@ def prediction_form(model, scaler):
         save_prediction(data, result)
 
 def view_predictions():
-    st.header("📁 Prediction History")
+    st.header("View Predictions")
     cursor.execute("SELECT name, age, psa, prostate_volume, family_history, prediction FROM predictions")
     rows = cursor.fetchall()
     if rows:
@@ -150,7 +150,7 @@ def export_pdf(df):
 
 def main_app():
     logout_button()
-    st.title("🧠 Prostate Cancer Risk Prediction System")
+    st.title("Prostate Cancer Risk Predictor")
 
     model_data = load_model()
     if not model_data:
