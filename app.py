@@ -64,12 +64,16 @@ def load_model():
 def train_model(data):
     st.info("Training model...")
 
+    # Drop non-numeric fields
     data = data.drop(columns=[col for col in data.columns if col.lower() in ["name", "id"]], errors='ignore')
 
     X = data.drop("target", axis=1)
     y = data["target"]
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # ✅ Ensure balanced splitting
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y
+    )
 
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
@@ -78,20 +82,21 @@ def train_model(data):
     model = RandomForestClassifier()
     model.fit(X_train_scaled, y_train)
 
-    # Evaluation
+    # Evaluate model
     y_pred = model.predict(X_test_scaled)
     accuracy = accuracy_score(y_test, y_pred)
     report = classification_report(y_test, y_pred, output_dict=True)
     matrix = confusion_matrix(y_test, y_pred)
 
-    # Display evaluation results
-    st.subheader("Model Evaluation Results")
+    # Display results
+    st.subheader("📊 Model Evaluation Results")
     st.write(f"**Accuracy:** {accuracy:.2f}")
     st.write("**Classification Report:**")
     st.json(report)
     st.write("**Confusion Matrix:**")
     st.write(matrix)
 
+    # Save model
     with open(MODEL_FILE, "wb") as f:
         pickle.dump((model, scaler), f)
 
@@ -158,7 +163,7 @@ def export_predictions_pdf():
     st.download_button("Download PDF Report", pdf_output, file_name="predictions_report.pdf")
 
 def view_predictions():
-    st.header("Prediction History")
+    st.header("📁 Prediction History")
     cursor.execute("SELECT name, age, psa, prostate_volume, family_history, prediction FROM predictions")
     rows = cursor.fetchall()
     if rows:
